@@ -1,6 +1,9 @@
 package com.example.DoctorAppointmentBooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,11 +22,15 @@ public class Doctor {
 
     private String password;
 
+    @JsonIgnore
+    @ManyToOne
+    private Department department;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "doctor")
     private Set<Patient> patients;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "doctor")
-    private Set<Appointment> appointments;
+    @OneToMany(mappedBy = "doctor")
+    private List<Appointment> appointments;
 
     public Doctor() {
     }
@@ -85,11 +92,19 @@ public class Doctor {
         this.patients = patients;
     }
 
-    public Set<Appointment> getAppointments() {
+    public List<Appointment> getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(Set<Appointment> appointments) {
+    public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

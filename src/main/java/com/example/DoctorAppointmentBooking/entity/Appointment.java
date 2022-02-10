@@ -1,26 +1,25 @@
 package com.example.DoctorAppointmentBooking.entity;
 
+
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
 
 @Entity
 public class Appointment {
 
     @Id
     @GeneratedValue
-    private Integer apppointmentId;
+    private Integer appointmentId;
 
-    private Date date;
+    private String date;
 
-    private Time time;
+    private String time;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id")
+    @JoinColumn
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id")
+    @JoinColumn
     private Doctor doctor;
 
     private String description;
@@ -28,34 +27,35 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(Integer apppointmentId, Date date, Time time, String description) {
-        this.apppointmentId = apppointmentId;
+    public Appointment(String date, String time, Patient patient, Doctor doctor, String description) {
         this.date = date;
         this.time = time;
+        this.patient = patient;
+        this.doctor = doctor;
         this.description = description;
     }
 
-    public Integer getApppointmentId() {
-        return apppointmentId;
+    public Integer getAppointmentId() {
+        return appointmentId;
     }
 
-    public void setApppointmentId(Integer apppointmentId) {
-        this.apppointmentId = apppointmentId;
+    public void setAppointmentId(Integer appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Time getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

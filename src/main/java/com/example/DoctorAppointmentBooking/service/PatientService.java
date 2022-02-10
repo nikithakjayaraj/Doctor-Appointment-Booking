@@ -19,4 +19,12 @@ public class PatientService {
     public Patient getUserByEmail(String email) {
         return patientRepository.findPatientByEmail(email);
     }
+
+    public Patient findById(Integer patientId) {
+        return patientRepository.getById(patientId);
+    }
+
+    public Patient updatePatient(Patient patient) {
+        return patientRepository.save(patient);
+    }
 }
