@@ -17407,15 +17407,8 @@ h3.post-content-title {
             <li class="nav-item">
               <a class="nav-link" href="http://localhost:8085">Home</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8085/about">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8085/departments">Departments</a>
-            </li>
-
             <li class="nav-item active">
-              <a class="nav-link" href="http://localhost:8085/doctorLogin">Login</a>
+              <a class="nav-link" href="http://localhost:8085/login">Login</a>
             </li>
 
           </ul>
@@ -17514,9 +17507,9 @@ h3.post-content-title {
         <h3><span th:text="${message}"></span></h3>
         <form action="/appointmentList" method="post" class="signin-form">
           <div class="input-grids">
-            <input type="email" name="email" id="email" placeholder="Your Email*" class="contact-input"
+            <input type="email" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="Your Email*" class="contact-input"
                    required="" />
-            <input type="password" name="password" id="password" placeholder="Your Password*" class="contact-input"
+            <input type="password" name="password" id="password" pattern=".{6,}" title="Six or more characters" placeholder="Your Password*" class="contact-input"
                    required="" />
           </div>
           <div class="w3l-submit text-lg-right">

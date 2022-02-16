@@ -1,13 +1,11 @@
 package com.example.DoctorAppointmentBooking.service;
 
 import com.example.DoctorAppointmentBooking.entity.Appointment;
-import com.example.DoctorAppointmentBooking.entity.Doctor;
 import com.example.DoctorAppointmentBooking.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AppointmentService {

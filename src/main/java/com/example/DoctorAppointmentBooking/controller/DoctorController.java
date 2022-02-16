@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
-import java.util.Optional;
+import java.security.Principal;
 
 @Controller
 public class DoctorController {
@@ -29,53 +28,15 @@ public class DoctorController {
     @Autowired
     private AppointmentService appointmentService;
 
-//    @GetMapping("/doctorRegister")
-//    public String registrationForm() {
-//        return "doctorRegister";
-//    }
-
-//    @PostMapping("/doctorLogin")
-//    public String registration(HttpServletRequest request) {
-//        String email = request.getParameter("email");
-//        String name = request.getParameter("name");
-//        String mobile= request.getParameter("mobile");
-//        String password = request.getParameter("password");
-//        Doctor doctor= new Doctor(name,mobile,email,password);
-//        doctorService.createDoctor(doctor);
-//        return "doctorLogin";
-//    }
-
-
-    @GetMapping("/doctorLogin")
-    public String loginForm() {
-        return "doctorLogin";
-    }
-
 
     @GetMapping("/appointmentList")
-    public String departments(){
+    public String departments(Model model, Principal principal){
+        String email=principal.getName();
+        defaultDoctor=doctorService.getDoctorByEmail(email);
+        model.addAttribute("appointments",appointmentService.appointmentList(defaultDoctor.getDoctorId()));
         return "appointmentList";
     }
 
-    @PostMapping("/appointmentList")
-    public String login(HttpServletRequest request, Model model){
-        Doctor doctor=doctorService.getDoctorByEmail(request.getParameter("email"));
-
-        if(!(Objects.isNull(doctor))){
-            email=request.getParameter("email");
-            password=request.getParameter("password");
-            defaultDoctor=doctor;
-            Integer doctorId= defaultDoctor.getDoctorId();
-            model.addAttribute("appointments",appointmentService.appointmentList(doctorId));
-
-            return "appointmentList";
-        }
-        else{
-            model.addAttribute("message","Invalid Credentials");
-            return "doctorLogin";
-        }
-
-    }
 
     @GetMapping("/department/{departmentId}")
     public String doctors(@PathVariable Integer departmentId, Model model){
@@ -96,8 +57,11 @@ public class DoctorController {
 
 
 
-    @GetMapping("/updateDoctor/{doctorId}")
-    public String updateDoctorDetails(@PathVariable Integer doctorId,Model model){
+    @GetMapping("/updateDoctor")
+    public String updateDoctorDetails(Principal principal,Model model){
+        String email=principal.getName();
+        Doctor doctor=doctorService.getDoctorByEmail(email);
+        Integer doctorId=doctor.getDoctorId();
         model.addAttribute("doctor",doctorService.findById(doctorId));
         return "updateDoctor";
     }

@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.security.Principal;
 import java.util.Objects;
 
 @Controller
@@ -30,37 +29,45 @@ public class PatientController {
     @Autowired
     private AppointmentService appointmentService;
 
+    @GetMapping("/login")
+    public String loginForm() {
+        return "patientLogin";
+    }
+
     @GetMapping("/patientRegister")
     public String registrationForm() {
         return "patientRegister";
     }
 
-    @GetMapping("/patientLogin")
-    public String loginForm() {
-        return "patientLogin";
-    }
 
-    @PostMapping("/patientLogin")
-    public String registration(HttpServletRequest request) {
+
+    @PostMapping("/register")
+    public String registration(HttpServletRequest request,Model model) {
         String email = request.getParameter("email");
         String name = request.getParameter("name");
         String mobile= request.getParameter("mobile");
         String password = request.getParameter("password");
         Patient patient= new Patient(name,mobile,email,password);
-        patientService.createPatient(patient);
+        if(!patientService.existsByEmail(email)) {
+            patientService.createPatient(patient);
+        } else {
+            model.addAttribute("error","Email already taken please choose another");
+            return "patientRegister";
+        }
         return "patientLogin";
     }
 
     @GetMapping("/departments")
-    public String departments(){
+    public String departments(Model model){
+        model.addAttribute("departments", departmentService.departmentList());
         return "departments";
     }
 
     @PostMapping("/departments")
     public String login(HttpServletRequest request, Model model){
-        Patient patient=patientService.getUserByEmail(request.getParameter("email"));
+        Patient patient=patientService.getUserByEmailAndPassword(request.getParameter("username"),request.getParameter("password"));
         if(!(Objects.isNull(patient))){
-            email=request.getParameter("email");
+            email=request.getParameter("username");
             password=request.getParameter("password");
             defaultPatient=patient;
             model.addAttribute("departments", departmentService.departmentList());
@@ -73,8 +80,11 @@ public class PatientController {
 
     }
 
-    @GetMapping("/updatePatient/{patientId}")
-    public String updatePatientDetails(@PathVariable Integer patientId,Model model){
+    @GetMapping("/updatePatient")
+    public String updatePatientDetails(Principal principal ,Model model){
+        String email=principal.getName();
+        Patient patient=patientService.getUserByEmail(email);
+        Integer patientId=patient.getPatientId();
         model.addAttribute("patient",patientService.findById(patientId));
         return "updatePatient";
     }
@@ -87,23 +97,23 @@ public class PatientController {
         patient.setPassword(request.getParameter("password"));
         patientService.updatePatient(patient);
         model.addAttribute("patient",patient);
-//        model.addAttribute("patientName",patient.getPatientName());
-//        model.addAttribute("email",patient.getEmail());
-//        model.addAttribute("patientMobile",patient.getPatientMobile());
-//        model.addAttribute("password",patient.getPassword());
         return "profile";
     }
 
     @GetMapping("/profile")
-    public String showProfile(Model model){
-        model.addAttribute("patient",defaultPatient);
+    public String showProfile(Model model, Principal principal){
+        String email=principal.getName();
+        Patient patient=patientService.getUserByEmail(email);
+        model.addAttribute("patient",patient);
         return "profile";
     }
 
 
     @GetMapping("/myAppointments")
-    public String myAppointments(Model model){
-        Integer patientId=defaultPatient.getPatientId();
+    public String myAppointments(Model model, Principal principal){
+        String email=principal.getName();
+        Patient patient=patientService.getUserByEmail(email);
+        Integer patientId=patient.getPatientId();
         model.addAttribute("appointments",appointmentService.myAppointmentList(patientId));
         return "myAppointments";
     }

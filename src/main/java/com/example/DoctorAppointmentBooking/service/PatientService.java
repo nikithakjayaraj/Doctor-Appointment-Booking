@@ -27,4 +27,12 @@ public class PatientService {
     public Patient updatePatient(Patient patient) {
         return patientRepository.save(patient);
     }
+
+    public Patient getUserByEmailAndPassword(String email, String password) {
+        return patientRepository.findUserByEmailAndPassword(email,password);
+    }
+
+    public boolean existsByEmail(String email) {
+        return patientRepository.existsByEmail(email);
+    }
 }

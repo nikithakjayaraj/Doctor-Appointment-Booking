@@ -24,7 +24,7 @@ import java.text.ParseException;
 @Controller
 public class AppointmentController {
 
-    static Doctor defaultDocotr;
+    static Doctor defaultDoctor;
 
     @Autowired
     private AppointmentService appointmentService;
@@ -42,9 +42,9 @@ public class AppointmentController {
 
     @GetMapping("/doctor/{doctorId}")
     public String bookAppointment(@PathVariable Integer doctorId, Model model){
-        defaultDocotr=doctorService.findByDoctorId(doctorId);
-        Department department=defaultDocotr.getDepartment();
-        model.addAttribute("doctorName",defaultDocotr.getDoctorName());
+        defaultDoctor=doctorService.findByDoctorId(doctorId);
+        Department department=defaultDoctor.getDepartment();
+        model.addAttribute("doctorName",defaultDoctor.getDoctorName());
         model.addAttribute("departmentName",department.getDepartmentName());
         return "bookAppointment";
     }
@@ -58,7 +58,7 @@ public class AppointmentController {
         String time= request.getParameter("time");
         String description=request.getParameter("description");
         Patient patient=patientService.getUserByEmail(email);
-        Appointment appointment=new Appointment(date,time,patient,defaultDocotr,description);
+        Appointment appointment=new Appointment(date,time,patient,defaultDoctor,description);
         appointmentService.create(appointment);
         model.addAttribute("patientName",patientName);
         model.addAttribute("email",email);
@@ -66,14 +66,11 @@ public class AppointmentController {
         model.addAttribute("date",date);
         model.addAttribute("time",time);
         model.addAttribute("description",description);
-        model.addAttribute("doctorName",defaultDocotr.getDoctorName());
-        Department department=defaultDocotr.getDepartment();
+        model.addAttribute("doctorName",defaultDoctor.getDoctorName());
+        Department department=defaultDoctor.getDepartment();
         model.addAttribute("departmentName",department.getDepartmentName());
         return "confirmation";
     }
-
-
-
 
 
 }
